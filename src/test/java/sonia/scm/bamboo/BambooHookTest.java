@@ -20,6 +20,8 @@ import sonia.scm.net.HttpClient;
 import sonia.scm.net.HttpRequest;
 import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
+import sonia.scm.repository.RepositoryHookEvent;
+import sonia.scm.repository.RepositoryHookType;
 
 import com.google.inject.Provider;
 
@@ -54,10 +56,12 @@ public class BambooHookTest {
 
     @Test
     public void testTriggerBamboo() throws IOException {
-    	PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(null);
-        Repository repo = Mockito.mock(Repository.class);
+    	Repository repo = Mockito.mock(Repository.class);
+    	
+    	RepositoryHookEvent event = new RepositoryHookEvent(null, repo, RepositoryHookType.POST_RECEIVE);
+		PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(event);
 
-        when(rhe.getRepository()).thenReturn(repo);
+//        when(rhe.getRepository()).thenReturn(repo);
         when(repo.getProperty(BambooHook.PROPERTY_BAMBOO_URL)).thenReturn(null);
         when(repo.getProperty(BambooHook.PROPERTY_BAMBOO_PLANS)).thenReturn("A,B");
 
@@ -77,10 +81,11 @@ public class BambooHookTest {
 
     @Test
     public void testTriggerBambooWithAuthentication() throws IOException {
-    	PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(null);
         Repository repo = Mockito.mock(Repository.class);
-
-        when(rhe.getRepository()).thenReturn(repo);
+        
+    	RepositoryHookEvent event = new RepositoryHookEvent(null, repo, RepositoryHookType.POST_RECEIVE);
+		PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(event);
+        
         when(repo.getProperty(BambooHook.PROPERTY_BAMBOO_URL)).thenReturn(null);
         when(repo.getProperty(BambooHook.PROPERTY_BAMBOO_PLANS)).thenReturn("A,B");
 
@@ -102,10 +107,11 @@ public class BambooHookTest {
 
     @Test
     public void testTriggerBambooWithOverrideUrl() throws IOException {
-    	PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(null);
         Repository repo = Mockito.mock(Repository.class);
+        
+    	RepositoryHookEvent event = new RepositoryHookEvent(null, repo, RepositoryHookType.POST_RECEIVE);
+		PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(event);
 
-        when(rhe.getRepository()).thenReturn(repo);
         when(repo.getProperty(BambooHook.PROPERTY_BAMBOO_URL)).thenReturn("http://override");
         when(repo.getProperty(BambooHook.PROPERTY_BAMBOO_PLANS)).thenReturn("A,B");
 
