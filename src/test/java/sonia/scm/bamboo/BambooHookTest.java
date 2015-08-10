@@ -1,6 +1,13 @@
 package sonia.scm.bamboo;
 
-import com.google.inject.Provider;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,18 +15,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
 import sonia.scm.net.HttpClient;
 import sonia.scm.net.HttpRequest;
+import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryHookEvent;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.google.inject.Provider;
 
 /**
  * Test class for the BambooHook.
@@ -52,7 +54,7 @@ public class BambooHookTest {
 
     @Test
     public void testTriggerBamboo() throws IOException {
-        RepositoryHookEvent rhe = Mockito.mock(RepositoryHookEvent.class);
+    	PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(null);
         Repository repo = Mockito.mock(Repository.class);
 
         when(rhe.getRepository()).thenReturn(repo);
@@ -75,7 +77,7 @@ public class BambooHookTest {
 
     @Test
     public void testTriggerBambooWithAuthentication() throws IOException {
-        RepositoryHookEvent rhe = Mockito.mock(RepositoryHookEvent.class);
+    	PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(null);
         Repository repo = Mockito.mock(Repository.class);
 
         when(rhe.getRepository()).thenReturn(repo);
@@ -100,7 +102,7 @@ public class BambooHookTest {
 
     @Test
     public void testTriggerBambooWithOverrideUrl() throws IOException {
-        RepositoryHookEvent rhe = Mockito.mock(RepositoryHookEvent.class);
+    	PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(null);
         Repository repo = Mockito.mock(Repository.class);
 
         when(rhe.getRepository()).thenReturn(repo);

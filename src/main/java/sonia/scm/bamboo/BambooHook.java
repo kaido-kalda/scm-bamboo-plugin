@@ -34,23 +34,24 @@ package sonia.scm.bamboo;
 
 //~--- non-JDK imports --------------------------------------------------------
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import java.io.IOException;
+
+import javax.inject.Singleton;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import sonia.scm.net.HttpClient;
 import sonia.scm.net.HttpRequest;
 import sonia.scm.net.HttpResponse;
-import sonia.scm.plugin.ext.Extension;
+import sonia.scm.plugin.Extension;
+import sonia.scm.repository.PostReceiveRepositoryHookEvent;
 import sonia.scm.repository.Repository;
-import sonia.scm.repository.RepositoryHook;
-import sonia.scm.repository.RepositoryHookEvent;
-import sonia.scm.repository.RepositoryHookType;
 import sonia.scm.util.Util;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
+import com.github.legman.Subscribe;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 //~--- JDK imports ------------------------------------------------------------
 
@@ -58,7 +59,8 @@ import java.util.Collection;
  * @author Stephan Oudmaijer
  */
 @Extension
-public class BambooHook implements RepositoryHook {
+@Singleton
+public class BambooHook {
 
     /**
      * Field description
@@ -89,6 +91,9 @@ public class BambooHook implements RepositoryHook {
      */
     @Inject
     public BambooHook(final Provider<HttpClient> httpClientProvider, final BambooPluginConfigRepository bambooPluginConfigRepository) {
+    	
+    	logger.info("bamboo hook initialized");
+    	
         this.httpClientProvider = httpClientProvider;
         this.bambooPluginConfigRepository = bambooPluginConfigRepository;
     }
@@ -98,37 +103,17 @@ public class BambooHook implements RepositoryHook {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void onEvent(RepositoryHookEvent event) {
+    @Subscribe
+    public void onEvent(PostReceiveRepositoryHookEvent event) {
         Repository repository = event.getRepository();
 
+        logger.info("event fired on repository: " + repository);
+        
         if (repository != null) {
             handleRepositoryEvent(repository);
         } else if (logger.isWarnEnabled()) {
             logger.warn("receive repository hook without repository");
         }
-    }
-
-    //~--- get methods ----------------------------------------------------------
-
-    /**
-     * POST_RECEIVE
-     *
-     * @return POST_RECEIVE repository hook type.
-     */
-    @Override
-    public Collection<RepositoryHookType> getTypes() {
-        return Arrays.asList(RepositoryHookType.POST_RECEIVE);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return true
-     */
-    @Override
-    public boolean isAsync() {
-        return true;
     }
 
     //~--- methods --------------------------------------------------------------
