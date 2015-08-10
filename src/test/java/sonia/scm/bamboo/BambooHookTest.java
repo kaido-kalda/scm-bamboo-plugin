@@ -61,7 +61,6 @@ public class BambooHookTest {
     	RepositoryHookEvent event = new RepositoryHookEvent(null, repo, RepositoryHookType.POST_RECEIVE);
 		PostReceiveRepositoryHookEvent rhe = new PostReceiveRepositoryHookEvent(event);
 
-//        when(rhe.getRepository()).thenReturn(repo);
         when(repo.getProperty(BambooHook.PROPERTY_BAMBOO_URL)).thenReturn(null);
         when(repo.getProperty(BambooHook.PROPERTY_BAMBOO_PLANS)).thenReturn("A,B");
 
